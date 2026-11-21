@@ -899,6 +899,89 @@
 
 <!-- JavaScript files -->
 <script src="js/config.js"></script>
+  <script type="module">
+  import {
+    initializeApp
+  } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+
+  import {
+    getFirestore,
+    collection,
+    query,
+    where,
+    orderBy,
+    getDocs
+  } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+
+  const app = initializeApp(window.SITE_CONFIG.firebase);
+  const db = getFirestore(app);
+
+  const dateInput = document.getElementById("bookingDate");
+  const timeSelect = document.getElementById("bookingTime");
+
+  dateInput.addEventListener("change", async () => {
+
+    const date = dateInput.value;
+
+    timeSelect.innerHTML =
+      '<option value="">در حال دریافت زمان‌ها...</option>';
+
+    timeSelect.disabled = true;
+
+    if (!date) return;
+
+    try {
+
+      const q = query(
+        collection(db, "appointmentSlots"),
+        where("date", "==", date),
+        where("status", "==", "available"),
+        orderBy("time", "asc")
+      );
+
+      const snapshot = await getDocs(q);
+
+      timeSelect.innerHTML = "";
+
+      if (snapshot.empty) {
+
+        timeSelect.innerHTML =
+          '<option value="">برای این روز زمانی موجود نیست</option>';
+
+        return;
+      }
+
+      const firstOption = document.createElement("option");
+      firstOption.value = "";
+      firstOption.textContent = "ساعت را انتخاب کنید";
+      timeSelect.appendChild(firstOption);
+
+      snapshot.forEach((doc) => {
+
+        const slot = doc.data();
+
+        const option = document.createElement("option");
+
+        option.value = slot.time;
+        option.textContent =
+          slot.label
+            ? `${slot.time} — ${slot.label}`
+            : slot.time;
+
+        timeSelect.appendChild(option);
+      });
+
+      timeSelect.disabled = false;
+
+    } catch (error) {
+
+      console.error("خطا در دریافت زمان‌ها:", error);
+
+      timeSelect.innerHTML =
+        '<option value="">خطا در دریافت زمان‌ها</option>';
+    }
+  });
+</script>
 <script>
   // تنظیمات تماس کلینیک
   // این مقدار مستقیماً برای سیستم رزرو پیامکی استفاده می‌شود.
@@ -924,6 +1007,7 @@
     const phone = form.elements.phone.value.trim();
     const service = form.elements.service.value.trim();
     const date = form.elements.date.value.trim();
+    const time = form.elements.time.value.trim();
     const message = form.elements.message.value.trim();
 
     if (!name || !phone) {
@@ -936,8 +1020,8 @@
       "نام و نام‌خانوادگی: " + name,
       "شماره تماس: " + phone,
       "نوع درمان: " + service,
-      date ? "زمان دلخواه: " + date : "",
-      message ? "پیام: " + message : ""
+      date ? "تاریخ مراجعه: " + date : "",
+      time ? "ساعت مراجعه: " + time : "",      message ? "پیام: " + message : ""
     ].filter(Boolean).join("\n");
 
     const clinicPhone = (window.SITE_CONFIG && window.SITE_CONFIG.phone) || "09019095939";
