@@ -886,6 +886,16 @@
 
 <!-- JavaScript files -->
 <script src="js/config.js"></script>
+<script>
+  // تنظیمات تماس کلینیک
+  // این مقدار مستقیماً برای سیستم رزرو پیامکی استفاده می‌شود.
+  window.SITE_CONFIG = window.SITE_CONFIG || {};
+  window.SITE_CONFIG.phone = window.SITE_CONFIG.phone || "09019095939";
+  window.CONFIG = window.CONFIG || {};
+  window.CONFIG.phone = window.CONFIG.phone || "09019095939";
+  window.siteConfig = window.siteConfig || {};
+  window.siteConfig.phone = window.siteConfig.phone || "09019095939";
+</script>
 <script src="js/main.js"></script>
 
 <script>
@@ -917,7 +927,8 @@
       message ? "پیام: " + message : ""
     ].filter(Boolean).join("\n");
 
-    const smsUrl = "sms:09019095939?body=" + encodeURIComponent(body);
+    const clinicPhone = (window.SITE_CONFIG && window.SITE_CONFIG.phone) || "09019095939";
+    const smsUrl = "sms:" + clinicPhone + "?body=" + encodeURIComponent(body);
     note.textContent = "در حال باز کردن پیامک…";
     window.location.href = smsUrl;
   });
