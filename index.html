@@ -848,13 +848,26 @@
         </label>
 
         <label>
-          زمان دلخواه
-          <input
-            name="date"
-            type="text"
-            placeholder="مثلاً: شنبه عصر"
-          >
-        </label>
+  تاریخ مراجعه
+  <input
+    name="date"
+    id="bookingDate"
+    type="date"
+    required
+  >
+</label>
+
+<label>
+  ساعت مراجعه
+  <select
+    name="time"
+    id="bookingTime"
+    required
+    disabled
+  >
+    <option value="">ابتدا تاریخ را انتخاب کنید</option>
+  </select>
+</label>
       </div>
 
       <label>
