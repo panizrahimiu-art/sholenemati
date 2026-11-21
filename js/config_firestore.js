@@ -35,7 +35,7 @@ window.SITE_CONFIG = {
 
   // برای امنیت پنل، بعداً ایمیل ادمین را اینجا وارد کن.
   // مثال: adminEmail: "your-email@gmail.com"
-  adminEmail: "",
+  adminEmail: "paniz.rahimiu@gmail.com",
 
   theme: {
     primary: "#17191D",
