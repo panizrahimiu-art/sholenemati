@@ -445,12 +445,7 @@
           <a class="svc-link" href="#contact">اطلاعات بیشتر <svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
         </article>
 
-        <article class="svc-card">
-          <div class="svc-ico"><svg aria-hidden="true"><use href="#i-braces"/></svg></div>
-          <h3>ارتودنسی</h3>
-          <p>ارتودنسی ثابت و الاینر شفاف برای لبخندی منظم و با اعتماد‌به‌نفس.</p>
-          <a class="svc-link" href="#contact">اطلاعات بیشتر <svg aria-hidden="true"><use href="#i-arrow"/></svg></a>
-        </article>
+
 
         <article class="svc-card">
           <div class="svc-ico"><svg aria-hidden="true"><use href="#i-root"/></svg></div>
@@ -848,7 +843,6 @@
             <option>ایمپلنت دندان</option>
             <option>سفید کردن دندان</option>
             <option>مراقبت‌های پیشگیرانه</option>
-            <option>ارتودنسی</option>
             <option>درمان ریشه (عصب‌کشی)</option>
           </select>
         </label>
@@ -883,7 +877,7 @@
       ></p>
 
       <button class="btn btn-tan btn-block" type="submit">
-        ارسال درخواست
+        ارسال درخواست از طریق پیامک
       </button>
 
     </form>
@@ -893,6 +887,42 @@
 <!-- JavaScript files -->
 <script src="js/config.js"></script>
 <script src="js/main.js"></script>
+
+<script>
+(function () {
+  const form = document.getElementById("bookingForm");
+  const note = document.getElementById("formNote");
+  if (!form) return;
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const name = form.elements.name.value.trim();
+    const phone = form.elements.phone.value.trim();
+    const service = form.elements.service.value.trim();
+    const date = form.elements.date.value.trim();
+    const message = form.elements.message.value.trim();
+
+    if (!name || !phone) {
+      note.textContent = "لطفاً نام و شماره‌ی تماس را وارد کنید.";
+      return;
+    }
+
+    const body = [
+      "سلام، برای رزرو مشاوره در کلینیک دکتر شعله نعمتی درخواست دارم.",
+      "نام و نام‌خانوادگی: " + name,
+      "شماره تماس: " + phone,
+      "نوع درمان: " + service,
+      date ? "زمان دلخواه: " + date : "",
+      message ? "پیام: " + message : ""
+    ].filter(Boolean).join("\n");
+
+    const smsUrl = "sms:09019095939?body=" + encodeURIComponent(body);
+    note.textContent = "در حال باز کردن پیامک…";
+    window.location.href = smsUrl;
+  });
+})();
+</script>
 
 </body>
 </html>
