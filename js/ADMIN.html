@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>پنل مدیریت | PURE DENTAL</title>
+  <style>
+    *{box-sizing:border-box}body{margin:0;font-family:Tahoma,Arial,sans-serif;background:#f5f3ef;color:#17191d}
+    button,input{font:inherit}button{cursor:pointer}.hidden{display:none!important}
+    .auth{min-height:100vh;display:grid;place-items:center;padding:24px;background:linear-gradient(135deg,#17191d,#29231f)}
+    .auth-card{width:min(420px,100%);background:#fff;border-radius:24px;padding:34px;box-shadow:0 24px 80px #0005}
+    .brand{font-size:14px;letter-spacing:2px;color:#9a7b5c;margin-bottom:10px}.auth h1{margin:0 0 8px;font-size:28px}.muted{color:#777;font-size:14px;line-height:1.8}
+    label{display:block;font-size:13px;font-weight:700;margin:18px 0 7px}.input{width:100%;border:1px solid #ddd;border-radius:12px;padding:13px 14px;outline:none}.input:focus{border-color:#b18b65}
+    .btn{border:0;border-radius:12px;padding:13px 18px;background:#17191d;color:#fff}.btn.secondary{background:#eee;color:#17191d}.btn.danger{background:#8e3b3b}.btn.full{width:100%;margin-top:22px}.error{color:#a33;margin-top:14px;font-size:13px}
+    .app{min-height:100vh}.top{height:74px;background:#17191d;color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 28px}.top-title{font-size:18px}.top small{display:block;color:#bcae9f;margin-top:3px}
+    .layout{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 74px)}.side{background:#211f1d;color:#fff;padding:24px}.side h2{font-size:15px;margin:0 0 22px}.side .btn{width:100%;margin-bottom:10px}.content{padding:30px;max-width:1200px;width:100%;margin:auto}
+    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:22px}.stat{background:#fff;border-radius:18px;padding:20px;border:1px solid #e8e2da}.stat b{font-size:30px;display:block}.stat span{color:#777;font-size:13px}
+    .panel{background:#fff;border:1px solid #e8e2da;border-radius:20px;padding:22px;margin-bottom:20px}.panel-head{display:flex;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap}.panel h2{font-size:18px;margin:0}.date-row{display:flex;gap:10px;align-items:end;flex-wrap:wrap}.date-row>div{flex:1;min-width:180px}.slots{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;margin-top:20px}.slot{border:1px solid #ded8d0;border-radius:14px;padding:14px;background:#faf9f7;text-align:center}.slot.available{border-color:#9bb59d;background:#f2f7f2}.slot.booked{border-color:#d6a0a0;background:#fbf0f0}.slot strong{display:block;font-size:16px}.slot small{display:block;color:#777;margin:6px 0 10px}.slot-actions{display:flex;gap:6px}.slot-actions button{flex:1;border:0;border-radius:8px;padding:7px;font-size:11px}.reserve{background:#dfeade}.free{background:#eee}.delete{background:#f1dddd}.empty{color:#777;text-align:center;padding:30px}
+    .add-form{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end}.notice{padding:12px 14px;border-radius:12px;background:#f3eee7;margin-top:14px;font-size:13px;line-height:1.8}
+    @media(max-width:800px){.layout{grid-template-columns:1fr}.side{padding:16px}.stats{grid-template-columns:1fr 1fr}.content{padding:18px}.add-form{grid-template-columns:1fr}.top{padding:0 16px}}
+    @media(max-width:520px){.stats{grid-template-columns:1fr}.slots{grid-template-columns:repeat(2,1fr)}}
+  </style>
+</head>
+<body>
+  <section id="loginView" class="auth">
+    <div class="auth-card">
+      <div class="brand">PURE DENTAL</div>
+      <h1>پنل مدیریت</h1>
+      <p class="muted">برای مدیریت زمان‌های رزرو وارد حساب ادمین شوید.</p>
+      <form id="loginForm">
+        <label for="email">ایمیل</label>
+        <input id="email" class="input" type="email" autocomplete="username" required>
+        <label for="password">رمز عبور</label>
+        <input id="password" class="input" type="password" autocomplete="current-password" required>
+        <button class="btn full" type="submit">ورود به پنل</button>
+      </form>
+      <div id="loginError" class="error"></div>
+    </div>
+  </section>
+
+  <section id="appView" class="app hidden">
+    <header class="top">
+      <div><div class="top-title">مدیریت نوبت‌های مطب</div><small>دکتر شعله نعمتی · PURE DENTAL</small></div>
+      <button id="logoutBtn" class="btn secondary">خروج</button>
+    </header>
+    <div class="layout">
+      <aside class="side">
+        <h2>مدیریت زمان‌ها</h2>
+        <button id="todayBtn" class="btn">امروز</button>
+        <button id="refreshBtn" class="btn secondary">به‌روزرسانی</button>
+        <div class="notice">هر زمان را می‌توانی آزاد یا پر کنی. بیمار فقط زمان‌های آزاد را در فرم رزرو می‌بیند.</div>
+      </aside>
+      <main class="content">
+        <div class="stats">
+          <div class="stat"><b id="availableCount">0</b><span>زمان آزاد</span></div>
+          <div class="stat"><b id="bookedCount">0</b><span>زمان رزرو شده</span></div>
+          <div class="stat"><b id="totalCount">0</b><span>کل زمان‌ها</span></div>
+        </div>
+
+        <section class="panel">
+          <div class="panel-head"><h2>انتخاب روز</h2><div class="date-row"><div><label for="selectedDate">تاریخ</label><input id="selectedDate" class="input" type="date"></div></div></div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head"><h2>افزودن زمان</h2></div>
+          <div class="add-form">
+            <div><label for="slotTime">ساعت</label><input id="slotTime" class="input" type="time"></div>
+            <div><label for="slotLabel">عنوان اختیاری</label><input id="slotLabel" class="input" type="text" placeholder="مثلاً ویزیت اولیه"></div>
+            <button id="addSlotBtn" class="btn">افزودن زمان</button>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head"><h2>زمان‌های این روز</h2><span id="dateLabel" class="muted"></span></div>
+          <div id="slots" class="slots"></div>
+        </section>
+      </main>
+    </div>
+  </section>
+
+  <script src="js/config.js"></script>
+  <script type="module" src="js/admin.js"></script>
+</body>
+</html>
